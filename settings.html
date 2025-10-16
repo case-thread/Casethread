@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Judgment Analyzer Settings</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .help-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .primary-button {
+            background: #667eea;
+            color: white;
+        }
+        
+        .primary-button:hover {
+            background: #5a6fd8;
+        }
+        
+        .secondary-button {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .secondary-button:hover {
+            background: #5a6268;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .api-key-section {
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+                <h1>CaseThread Settings</h1>
+        <p class="subtitle">Configure your API key and extension preferences</p>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> Your API keys are stored locally in your browser and are not sent to any third-party servers except the respective AI providers.
+        </div>
+        
+                <div class="api-key-section">
+                    <h3>AI Model Configuration</h3>
+                    <div class="form-group">
+                        <div class="help-text">
+                            Configure API keys for the AI models you want to use. You can use any combination of models - the extension will show only the models you have configured.
+                        </div>
+                    </div>
+                </div>
+        
+        <div class="api-key-section">
+            <h3>Gemini API Configuration</h3>
+            <div class="form-group">
+                <label for="api-key">Gemini API Key</label>
+                <input type="password" id="api-key" placeholder="Enter your Gemini API key">
+                <div class="help-text">
+                    Get your API key from <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="api-key-section">
+            <h3>Grok API Configuration</h3>
+            <div class="form-group">
+                <label for="grok-api-key">Grok API Key</label>
+                <input type="password" id="grok-api-key" placeholder="Enter your Grok API key">
+                <div class="help-text">
+                    Get your API key from <a href="https://console.x.ai/" target="_blank">xAI Console</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Secondary AI API Configuration - DISABLED
+             Note: Secondary AI integration has been temporarily disabled because the current Secondary AI model
+             takes a very long time to process judgment texts, significantly impacting user experience.
+             This feature will be revisited in later versions when faster models become available or
+             performance optimizations can be implemented.
+        -->
+        <div class="api-key-section" style="display: none;">
+            <h3>Secondary AI API Configuration (Optional - For Enhanced Accuracy)</h3>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="enable-secondary-ai" style="width: auto; margin-right: 8px;">
+                    Enable Secondary AI Verification (adds 1-2 minutes to analysis)
+                </label>
+                <div class="help-text" style="margin-top: 10px;">
+                    Secondary AI provides dual-AI verification to ensure paragraph references are accurate.
+                    Disable this for faster analysis (Gemini only).
+                </div>
+            </div>
+            <div class="form-group" id="secondary-ai-key-field">
+                <label for="secondary-ai-key">Secondary AI API Key</label>
+                <input type="password" id="secondary-ai-key" placeholder="Enter your Secondary AI API key (optional)">
+                <div class="help-text">
+                    Get your free API key from <a href="https://platform.secondary-ai.com/api_keys" target="_blank">Secondary AI Platform</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="save-btn" class="primary-button">Save Settings</button>
+            <button id="test-btn" class="secondary-button">Test Connection</button>
+        </div>
+        
+        <div id="status" class="status"></div>
+        
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e1e5e9;">
+            <h3>How to get your API Keys:</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                <div>
+                    <h4>Gemini API Key:</h4>
+                    <ol style="color: #666; line-height: 1.6; font-size: 14px;">
+                        <li>Visit <a href="https://makersuite.google.com/app/apikey" target="_blank">Google AI Studio</a></li>
+                        <li>Sign in with your Google account</li>
+                        <li>Click "Create API Key"</li>
+                        <li>Copy the generated key</li>
+                    </ol>
+                </div>
+                <div>
+                    <h4>Grok API Key:</h4>
+                    <ol style="color: #666; line-height: 1.6; font-size: 14px;">
+                        <li>Visit <a href="https://console.x.ai/" target="_blank">xAI Console</a></li>
+                        <li>Sign in with your xAI account</li>
+                        <li>Navigate to API Keys section</li>
+                        <li>Create a new API key</li>
+                    </ol>
+                </div>
+            </div>
+            <p style="color: #666; margin-top: 15px; font-size: 14px;">
+                <strong>Note:</strong> You need at least one API key configured. If you have both, you can switch between models in the dropdown above.
+            </p>
+        </div>
+    </div>
+
+    <script src="settings.js"></script>
+</body>
+</html>

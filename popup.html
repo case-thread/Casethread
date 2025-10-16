@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Judgment Analyzer</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <img src="icons/CaseThread_compact.png" alt="CaseThread Logo" class="header-logo-large">
+                <span class="beta-badge" id="version-badge">Beta v1.5.0</span>
+                <p class="header-description">AI-powered legal judgment analysis and knowledge management</p>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Initial state -->
+            <div id="initial-state" class="state-container">
+                <div class="homepage-buttons">
+                    <button id="analyze-btn" class="analyze-button">
+                        <span class="button-text">Analyze Current Judgment</span>
+                        <span class="button-icon">🔍</span>
+                    </button>
+                    <button id="kb-homepage-btn" class="kb-homepage-button">
+                        <span class="button-text">Knowledge Base</span>
+                        <span class="button-icon">📚</span>
+                    </button>
+                </div>
+                <p class="instruction">The AI analysis function works with HTML judgment pages and court websites.</p>
+                
+                <div class="info-box">
+                    <p class="info-text">
+                        🚀 <strong>First time using this tool?</strong> You'll need to set up your own API key to use Gemini AI models. 
+                        Click the "Setup API Key" button below or go to Options to configure your 
+                        <a href="https://aistudio.google.com/app/apikey" target="_blank" class="api-link">Gemini API key</a>. 
+                        This is very easy to set up and only takes two minutes.
+                    </p>
+                    <p class="info-text" style="margin-top: 8px;">
+                        ℹ️ <strong>Note:</strong> Due to AI model input limits, this tool analyzes the first ~100,000 characters (~15,000 words) of the judgment. 
+                        Very lengthy judgments may have their latter portions truncated. For best results, use on judgments under 100 pages.
+                    </p>
+                    <p class="info-text" style="margin-top: 8px;">
+                        ⚠️ <strong>Compatibility:</strong> Works best with direct judgment pages. 
+                        Some court websites use frames that may limit content extraction.
+                    </p>
+                    <p class="info-text" style="margin-top: 8px;">
+                        📄 <strong>PDF Files:</strong> Chrome's security prevents extensions from extracting text from PDFs. 
+                        <strong>Workaround:</strong> If judgment PDFs are also available as HTML - search for the case name and analyze the HTML version instead.
+                    </p>
+                </div>
+                
+                <div class="options-section">
+                    <div class="option-group">
+                        <label class="option-label">Analysis Model:</label>
+                        <div id="model-selection-container">
+                            <!-- Dynamic model selection will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="option-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="enable-cross-check">
+                            <span>Cross-Check with Another AI Model</span>
+                        </label>
+                    </div>
+                    
+                    <div class="option-group" id="cross-check-model-group" style="display: none; margin-left: 20px;">
+                        <label class="option-label">Cross-Check Model:</label>
+                        <div id="cross-check-model-container">
+                            <!-- Dynamic cross-check model selection will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bottom-buttons">
+                    <button id="api-setup-btn" class="api-setup-button">
+                        🔑 Setup API Key
+                    </button>
+                    <button id="clear-cache-btn" class="clear-cache-button">
+                        🗑️ Clear All Cache
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading state -->
+            <div id="loading-state" class="state-container hidden">
+                <div class="loading-spinner"></div>
+                <p class="loading-text" id="loading-text">Analyzing judgment...</p>
+                <p class="loading-models" id="loading-models" style="margin-top: 10px; color: #667eea; font-size: 14px; font-weight: 500;"></p>
+                <p class="loading-subtext" id="loading-subtext">This may take a few moments</p>
+                <div id="cross-check-loading-note" class="cross-check-loading-note hidden">
+                    <p class="cross-check-note-text">📋 Cross-check summary will appear at the end of the analysis page</p>
+                    <p class="cross-check-caveat">⚠️ Note: Cross-check may reduce the possibility of incorrectness but cannot eliminate that possibility</p>
+                </div>
+                <div id="loading-progress" class="loading-progress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <p class="progress-text" id="progress-text"></p>
+                </div>
+            </div>
+
+            <!-- Results state -->
+            <div id="results-state" class="state-container hidden">
+                <div class="results-header">
+                    <div class="results-header-content">
+                        <h2>Analysis Results</h2>
+                        <div class="status-badges status-badges-centered">
+                            <span id="cache-indicator" class="cache-indicator hidden">📦 Cached</span>
+                            <span id="verification-badge" class="verification-badge hidden">🤖 Analyzed by Gemini</span>
+                        </div>
+                        <div class="action-buttons-container">
+                            <!-- Cross-check options panel (appears above buttons) -->
+                            <div id="cross-check-options" class="cross-check-options hidden">
+                                <div class="cross-check-label">Cross-check with another AI model:</div>
+                                <div class="cross-check-models">
+                                    <button id="verify-flash-btn" class="verify-model-btn" data-model="gemini-flash">
+                                        Gemini Flash
+                                    </button>
+                                    <button id="verify-flash-lite-btn" class="verify-model-btn" data-model="gemini-flash-lite">
+                                        Gemini Flash Lite
+                                    </button>
+                                    <button id="verify-pro-btn" class="verify-model-btn" data-model="gemini-pro">
+                                        Gemini Pro
+                                    </button>
+                                    <button id="verify-grok-btn" class="verify-model-btn" data-model="grok">
+                                        Grok 4 Fast Reasoning
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- All action buttons in one row -->
+                            <div class="action-buttons-row">
+                                <button id="verify-secondary-ai-btn" class="action-button verify-button hidden">
+                                    <span class="button-icon">🔍</span>
+                                    AI Cross-check
+                                </button>
+                                <button id="copy-btn" class="action-button copy-button">
+                                    <span class="button-icon">📋</span>
+                                    Copy JSON
+                                </button>
+                                <button id="download-btn" class="action-button download-button">
+                                    <span class="button-icon">💾</span>
+                                    Download JSON
+                                </button>
+                            </div>
+                            
+                            <!-- Knowledge Base buttons -->
+                            <div class="knowledge-buttons-row">
+                                <button id="save-to-kb-btn" class="secondary-button knowledge-button">
+                                    <span class="button-icon">📚</span>
+                                    Save to Knowledge Base
+                                </button>
+                                <button id="search-kb-btn" class="action-button knowledge-button">
+                                    <span class="button-icon">🔍</span>
+                                    Search Knowledge Base
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-content">
+                    <div class="json-viewer" id="json-viewer">
+                        <!-- JSON content will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Cross-check summary section -->
+                <div id="cross-check-summary" class="cross-check-summary hidden">
+                    <div class="cross-check-summary-content" id="cross-check-summary-content">
+                        <!-- Cross-check summary will be populated here -->
+                    </div>
+                </div>
+
+                <div class="results-footer">
+                    <button id="new-analysis-btn" class="secondary-button new-analysis-button">
+                        ← Abandon & Return to Home
+                    </button>
+                </div>
+            </div>
+
+            <!-- Error state -->
+            <div id="error-state" class="state-container hidden">
+                <div class="error-icon">⚠️</div>
+                <h3>Analysis Failed</h3>
+                <p id="error-message" class="error-message"></p>
+                <div class="error-actions">
+                    <button id="retry-btn" class="retry-button">Try Again</button>
+                    <button id="debug-btn" class="debug-button">Show Debug Info</button>
+                    <button id="api-setup-error-btn" class="api-setup-error-button hidden">
+                        🔑 Setup API Key
+                    </button>
+                </div>
+                <div id="debug-info" class="debug-info hidden">
+                    <h4>Debug Information:</h4>
+                    <pre id="debug-content"></pre>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="disclaimer">⚠️ AI models may make errors. Please review analysis carefully before relying on it. 
+                    <a href="#" id="disclaimer-btn" class="disclaimer-link">Learn more about intended use and limitations</a>
+                </p>
+                <p class="disclaimer">
+                    📧 Questions or feedback? Contact 
+                    <a href="mailto:casethread.ai@gmail.com" class="disclaimer-link">casethread.ai@gmail.com</a>
+                </p>
+            </div>
+            
+            <!-- Disclaimer Tooltip -->
+            <div id="disclaimer-tooltip" class="disclaimer-tooltip hidden">
+                <div class="disclaimer-content">
+                    <p class="disclaimer-title">Intended Use & Limitations</p>
+                    
+                    <p><strong>This tool may help legal professionals:</strong></p>
+                    <p>- Quickly assess whether a judgment warrants deeper reading</p>
+                    <p>- Organize and summarize cases in your personal knowledge system</p>
+                    <p>- Flag potentially relevant judgments for further review</p>
+                    
+                    <p><strong>This tool is NOT suitable for:</strong></p>
+                    <p>- Detailed legal research on complex or nuanced topics</p>
+                    <p>- Relying on AI summaries as authoritative analysis</p>
+                    <p>- Cases requiring fine-grained interpretation of legal principles</p>
+                    
+                    <p><strong>Why:</strong> Large language models have inherent limitations in capturing nuanced legal reasoning, distinguishing between holdings and dicta, and understanding jurisdictional subtleties. Always conduct thorough independent review for substantive legal work.</p>
+                    
+                    <p><strong>Privacy & Data Handling:</strong> Users are solely responsible for reviewing and complying with the privacy policy and data handling practices of their selected AI service provider, and the terms of service of the websites they are analyzing. The data privacy and terms applicable to your analysis may depend on which AI model provider you choose and the website's terms of service. This tool is designed to store cached analysis and summaries locally on your device only. It is not intended to collect, store, or transmit cached data to this tool's developer. Only the judgment content necessary for AI analysis is sent to your chosen AI service provider in accordance with their terms.</p>
+                    
+                    <p><strong>Disclaimer:</strong> Users are solely responsible for verifying the accuracy of any information from this tool and conducting independent legal research before relying on any analysis for legal advice or decisions.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Knowledge Base Save Modal -->
+    <div id="kb-save-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Save to Knowledge Base</h3>
+                <button class="modal-close" id="kb-save-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="kb-label">Label (required):</label>
+                    <input type="text" id="kb-label" placeholder="e.g., Contract Law - Breach of Contract" maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label for="kb-tags">Tags (optional, comma-separated):</label>
+                    <input type="text" id="kb-tags" placeholder="e.g., contract, breach, damages, commercial" maxlength="200">
+                </div>
+                <div class="form-group">
+                    <label for="kb-notes">Notes (optional):</label>
+                    <textarea id="kb-notes" placeholder="Add your personal notes about this case..." maxlength="500" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Case:</label>
+                    <div class="case-preview" id="kb-case-preview"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="kb-save-cancel" class="secondary-button">Cancel</button>
+                <button id="kb-save-confirm" class="secondary-button">Save to Knowledge Base</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Knowledge Base Search Modal -->
+    <div id="kb-search-modal" class="modal hidden">
+        <div class="modal-content kb-search-modal">
+            <div class="modal-header">
+                <h3>Knowledge Base</h3>
+                <button class="modal-close" id="kb-search-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="search-controls">
+                    <input type="text" id="kb-search-input" placeholder="Search by label, tags, or case name..." class="search-input">
+                    <button id="kb-clear-search" class="secondary-button">Clear</button>
+                </div>
+                <div class="kb-stats" id="kb-stats"></div>
+                <div class="kb-results" id="kb-results"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="kb-export-btn" class="secondary-button">Export All</button>
+                <button id="kb-search-close-btn" class="secondary-button">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Knowledge Base Entry Detail Modal -->
+    <div id="kb-detail-modal" class="modal hidden">
+        <div class="modal-content kb-detail-modal">
+            <div class="modal-header">
+                <h3 id="kb-detail-title">Judgment Details</h3>
+                <button class="modal-close" id="kb-detail-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="kb-detail-content" id="kb-detail-content"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="kb-detail-edit" class="secondary-button">Edit</button>
+                <button id="kb-detail-delete" class="delete-button">Delete</button>
+                <button id="kb-detail-export" class="secondary-button">Export This</button>
+                <button id="kb-detail-close-btn" class="secondary-button">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Knowledge Base Edit Modal -->
+    <div id="kb-edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Knowledge Base Entry</h3>
+                <button class="modal-close" id="kb-edit-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="kb-edit-label">Label (required):</label>
+                    <input type="text" id="kb-edit-label" placeholder="e.g., Contract Law - Breach of Contract" maxlength="100">
+                </div>
+                <div class="form-group">
+                    <label for="kb-edit-tags">Tags (optional, comma-separated):</label>
+                    <input type="text" id="kb-edit-tags" placeholder="e.g., contract, breach, damages, commercial" maxlength="200">
+                </div>
+                <div class="form-group">
+                    <label for="kb-edit-notes">Notes (optional):</label>
+                    <textarea id="kb-edit-notes" placeholder="Add your personal notes about this case..." maxlength="500" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Case:</label>
+                    <div class="case-preview" id="kb-edit-case-preview"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="kb-edit-cancel" class="secondary-button">Cancel</button>
+                <button id="kb-edit-save" class="secondary-button">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Knowledge Base Delete Confirmation Modal -->
+    <div id="kb-delete-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Entry</h3>
+                <button class="modal-close" id="kb-delete-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this entry?</p>
+                <div class="delete-preview" id="kb-delete-preview"></div>
+                <p class="delete-warning">⚠️ This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="kb-delete-cancel" class="secondary-button">Cancel</button>
+                <button id="kb-delete-confirm" class="delete-button">Delete Entry</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
