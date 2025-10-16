@@ -11,19 +11,6 @@
     "downloads"
   ],
   
-  "host_permissions": [
-    "<all_urls>"
-  ],
-  
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_end",
-      "all_frames": true
-    }
-  ],
-  
   "background": {
     "service_worker": "background.js"
   },
@@ -51,7 +38,7 @@
   "web_accessible_resources": [
     {
       "resources": ["config.js", "icons/CaseThread_compact.png"],
-      "matches": ["<all_urls>"]
+      "matches": ["*://*/*"]
     }
   ]
 }
