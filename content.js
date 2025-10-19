@@ -18,9 +18,6 @@ const LEGAL_SITE_PATTERNS = {
         // Remove "You are here" breadcrumbs
         breadcrumbs: /You are here:.*$/gim,
         
-        // Remove copyright notices
-        copyrightNotice: /©.*$/gim,
-        
         // Remove URL lines
         urlLine: /^URL:.*$/gim,
         

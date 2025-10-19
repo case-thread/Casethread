@@ -292,11 +292,14 @@ CRITICAL FOR CASE NAME:
 
 CRITICAL FOR CITATION:
 - Extract citation exactly as it appears in "Cite as:" or "Neutral Citation Number:" field
-- HONG KONG CITATION FORMAT: Hong Kong cases may have dual citation format:
-  * Action number: "XXX number/year" (e.g., "HCCT 24/2020")
-  * Neutral citation: "[year] [court] [number]" (e.g., "[2021] HKCFI 1474")
-  * BOTH should be included if present: "HCCT 24/2020  [2021] HKCFI 1474" (note TWO spaces between)
+- HONG KONG CITATION FORMAT (IMPORTANT - Official Judiciary Rules):
+  * Since 1 January 2018, ALL Hong Kong judgments have neutral citations
+  * Neutral citation format: "[YEAR] COURT NUMBER" where YEAR must be in square brackets (e.g., "[2020] HKCFA 32" or "[2021] HKCFI 1474")
+  * When a neutral citation exists, provide ONLY the neutral citation - do NOT include the action number
+  * Example: For a case with action number "FACV Nos. 3 and 5 of 2019" and neutral citation "[2020] HKCFA 32", output ONLY: "[2020] HKCFA 32"
+  * CRITICAL: The neutral citation MUST include the year in square brackets like "[2020]" - NEVER output just "HKCFA 32" without the year
   * Common HK courts: HKCFI (Court of First Instance), HKCA (Court of Appeal), HKCFA (Court of Final Appeal)
+  * Only use action number format (e.g., "HCA 537/2014") if there is NO neutral citation (pre-2018 cases)
 - UK and other jurisdictions: Use neutral citation format "[year] COURT number" (e.g., "[2025] UKSC 22")
 
 IMPORTANT FOR JSON VALIDITY:
@@ -514,11 +517,14 @@ CRITICAL FOR CASE NAME:
 
 CRITICAL FOR CITATION:
 - Extract citation exactly as it appears in "Cite as:" or "Neutral Citation Number:" field
-- HONG KONG CITATION FORMAT: Hong Kong cases may have dual citation format:
-  * Action number: "XXX number/year" (e.g., "HCA 537/2014")
-  * Neutral citation: "[year] [court] [number]" (e.g., "[2024] HKCFI 576")
-  * BOTH should be included if present: "HCA 537/2014  [2024] HKCFI 576" (note TWO spaces between)
+- HONG KONG CITATION FORMAT (IMPORTANT - Official Judiciary Rules):
+  * Since 1 January 2018, ALL Hong Kong judgments have neutral citations
+  * Neutral citation format: "[YEAR] COURT NUMBER" where YEAR must be in square brackets (e.g., "[2020] HKCFA 32" or "[2024] HKCFI 576")
+  * When a neutral citation exists, provide ONLY the neutral citation - do NOT include the action number
+  * Example: For a case with action number "FACV Nos. 3 and 5 of 2019" and neutral citation "[2020] HKCFA 32", output ONLY: "[2020] HKCFA 32"
+  * CRITICAL: The neutral citation MUST include the year in square brackets like "[2020]" - NEVER output just "HKCFA 32" without the year
   * Common HK courts: HKCFI (Court of First Instance), HKCA (Court of Appeal), HKCFA (Court of Final Appeal)
+  * Only use action number format (e.g., "HCA 537/2014") if there is NO neutral citation (pre-2018 cases)
 - UK and other jurisdictions: Use neutral citation format "[year] COURT number" (e.g., "[2025] UKSC 22")
 
 IMPORTANT FOR JSON VALIDITY:
@@ -1273,11 +1279,14 @@ CRITICAL INSTRUCTIONS:
   * If you see both "[2025] UKSC 4" (at top) and "[2023] EWCA Civ 555" (after "On appeal from"), the current citation is [2025] UKSC 4 (Supreme Court)
   * DO NOT flag the primary citation as incorrect just because you see a lower court citation mentioned in the text
   * The primary AI's citation is likely correct if it matches the citation that appears first or in "Cite as:" field
-  * HONG KONG CITATION FORMAT: Hong Kong cases may have dual citation format:
-    - Action number format: "XXX number/year" (e.g., "HCCT 24/2020")
-    - Neutral citation format: "[year] [court] [number]" (e.g., "[2021] HKCFI 1474")
-    - BOTH should be included if present: "HCCT 24/2020 [2021] HKCFI 1474" (note the TWO spaces between them)
+  * HONG KONG CITATION FORMAT (IMPORTANT - Official Judiciary Rules):
+    - Since 1 January 2018, ALL Hong Kong judgments have neutral citations
+    - Neutral citation format: "[YEAR] COURT NUMBER" where YEAR must be in square brackets (e.g., "[2020] HKCFA 32" or "[2021] HKCFI 1474")
+    - When a neutral citation exists, provide ONLY the neutral citation - do NOT include the action number
+    - Example: For a case with action number "FACV Nos. 3 and 5 of 2019" and neutral citation "[2020] HKCFA 32", the correct citation is ONLY: "[2020] HKCFA 32"
+    - CRITICAL: The neutral citation MUST include the year in square brackets like "[2020]" - NEVER output just "HKCFA 32" without the year
     - Common HK courts: HKCFI (Court of First Instance), HKCA (Court of Appeal), HKCFA (Court of Final Appeal)
+    - Only use action number format (e.g., "HCA 537/2014") if there is NO neutral citation (pre-2018 cases)
 - If the primary AI's citation matches the top/main citation, mark it as CORRECT, even if you see other citations in the judgment text
 
 Respond with JSON containing YOUR analysis and comparison:
@@ -1415,11 +1424,14 @@ CRITICAL INSTRUCTIONS:
   * If you see both "[2025] UKSC 4" (at top) and "[2023] EWCA Civ 555" (after "On appeal from"), the current citation is [2025] UKSC 4 (Supreme Court)
   * DO NOT flag the primary citation as incorrect just because you see a lower court citation mentioned in the text
   * The primary AI's citation is likely correct if it matches the citation that appears first or in "Cite as:" field
-  * HONG KONG CITATION FORMAT: Hong Kong cases may have dual citation format:
-    - Action number format: "XXX number/year" (e.g., "HCA 537/2014")
-    - Neutral citation format: "[year] [court] [number]" (e.g., "[2024] HKCFI 576")
-    - BOTH should be included if present: "HCA 537/2014 [2024] HKCFI 576" (note the TWO spaces between them)
+  * HONG KONG CITATION FORMAT (IMPORTANT - Official Judiciary Rules):
+    - Since 1 January 2018, ALL Hong Kong judgments have neutral citations
+    - Neutral citation format: "[YEAR] COURT NUMBER" where YEAR must be in square brackets (e.g., "[2020] HKCFA 32" or "[2024] HKCFI 576")
+    - When a neutral citation exists, provide ONLY the neutral citation - do NOT include the action number
+    - Example: For a case with action number "FACV Nos. 3 and 5 of 2019" and neutral citation "[2020] HKCFA 32", the correct citation is ONLY: "[2020] HKCFA 32"
+    - CRITICAL: The neutral citation MUST include the year in square brackets like "[2020]" - NEVER output just "HKCFA 32" without the year
     - Common HK courts: HKCFI (Court of First Instance), HKCA (Court of Appeal), HKCFA (Court of Final Appeal)
+    - Only use action number format (e.g., "HCA 537/2014") if there is NO neutral citation (pre-2018 cases)
 - If the primary AI's citation matches the top/main citation, mark it as CORRECT, even if you see other citations in the judgment text
 
 Respond with JSON containing YOUR analysis and comparison:

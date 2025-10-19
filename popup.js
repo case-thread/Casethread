@@ -1773,7 +1773,7 @@ class LegalJudgmentAnalyzer {
         if (this.versionBadge) {
             const manifest = chrome.runtime.getManifest();
             const version = manifest.version;
-            this.versionBadge.textContent = `Beta v${version}`;
+            this.versionBadge.textContent = `v${version}`;
         }
     }
 
