@@ -179,7 +179,7 @@ AI models may make errors. Please review analysis carefully before relying on it
 
 ## 📊 Changelog
 
-### Version 1.0.0 (Current)
+### Version 1.1.0 (Current)
 - Multi-AI model support (Google Gemini Pro, Flash, Flash Lite; xAI Grok 4 Fast Reasoning)
 - Dynamic model selection based on configured API keys
 - AI cross-check functionality for enhanced accuracy
